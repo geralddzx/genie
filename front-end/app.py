@@ -10,8 +10,8 @@ import csv
 import random
 import requests
 from os import path
-from bs4 import BeautifulSoup
 import os
+from waitress import serve
 
 from genie import genie
 
@@ -20,4 +20,7 @@ from genie import genie
 app = Flask("genie")
 app.register_blueprint(genie)
 
-app.run(host = "0.0.0.0", port = os.environ["PORT"] or 5000)
+if "PRODUCTION" in os.environ:
+    serve(app, host='0.0.0.0', port="PORT" in os.environ and os.environ["PORT"] or 5000)
+else:
+    app.run(host = "0.0.0.0", port = "PORT" in os.environ and os.environ["PORT"] or 5000)
