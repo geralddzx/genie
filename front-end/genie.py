@@ -11,6 +11,7 @@ import csv
 import io
 import requests
 import os
+import time
 
 genie = Blueprint("genie", __name__)
 orders = [None, "DESC", "ASC"]
@@ -98,6 +99,7 @@ def index():
 
 @genie.route("/relationships/<path:id>")
 def show(id):
+    start_time = time.time()
     with connection as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT gene_id, mesh_id, gene_name, disease_name FROM relationships WHERE id = %s;", (id, ))
@@ -118,6 +120,8 @@ def show(id):
             cur.execute("SELECT year, journal_sum FROM journal_sums WHERE id = %s ORDER BY year;", (id, ))
             journals_data = np.array(cur.fetchall()).T.reshape(2, -1).tolist()
 
+            print("fetch stats at ", time.time() - start_time)
+
             cur.execute("""
                 SELECT DISTINCT paper_links.title, paper_links.link, paper_links.citations, pubmed_ranks.pubmed_rank
                 FROM paper_links LEFT OUTER JOIN pubmed_ranks
@@ -128,6 +132,7 @@ def show(id):
             """, (relationship[0], ))
             gene_links = [[row[0], row[1], row[2], str(row[3])] for row in cur.fetchall()]
 
+            print("fetch gene links at ", time.time() - start_time)
 
             cur.execute("""
                 SELECT DISTINCT paper_links.title, paper_links.link, paper_links.citations, pubmed_ranks.pubmed_rank
@@ -139,6 +144,8 @@ def show(id):
             """, (relationship[1], ))
             disease_links = [[row[0], row[1], row[2], str(row[3])] for row in cur.fetchall()]
 
+            print("fetch disease links at ", time.time() - start_time)
+
             cur.execute("""
                 SELECT paper_links.title, paper_links.link, paper_links.citations, pubmed_ranks.pubmed_rank
                 FROM paper_links LEFT OUTER JOIN pubmed_ranks
@@ -149,6 +156,8 @@ def show(id):
             """, (id, ))
             gene_disease_links = [[row[0], row[1], row[2], str(row[3])] for row in cur.fetchall()]
 
+            print("fetch gene disease links at ", time.time() - start_time)
+
             stats = [
                 ("Publications", pubs_data[0], pubs_data[1], "Cumulative Count"),
                 ("Citations", pubs_data[0], pubs_data[2], "Cumulative Count"),
@@ -157,6 +166,8 @@ def show(id):
                 ("h index", sjr_data[0], sjr_data[1], "Average"),
                 ("Articles", gene_disease_links),
             ]
+
+            print("return data at ", time.time() - start_time)
 
             return jsonify({"gene_data": gene_data.tolist(), "disease_data": disease_data.tolist(), "gene_name": relationship[2], "disease_name": relationship[3], "stats": stats, "gene_links": gene_links, "disease_links": disease_links})
 
