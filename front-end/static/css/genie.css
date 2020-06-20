@@ -161,3 +161,15 @@ body {
   height: 100vh;
   font-size:2vh;
 }
+
+.gene-disease-articles {
+  height: 75%;
+  width: 100%;
+  overflow: auto;
+  padding: 20px;
+  margin: 0;
+}
+
+.gene-disease-articles li a {
+  color: white;
+}

@@ -139,12 +139,23 @@ def show(id):
             """, (relationship[1], ))
             disease_links = [[row[0], row[1], row[2], str(row[3])] for row in cur.fetchall()]
 
+            cur.execute("""
+                SELECT paper_links.title, paper_links.link, paper_links.citations, pubmed_ranks.pubmed_rank
+                FROM paper_links LEFT OUTER JOIN pubmed_ranks
+                ON paper_links.pmid = pubmed_ranks.id
+                WHERE gene_disease_id = %s
+                ORDER BY pubmed_ranks.pubmed_rank DESC
+                LIMIT 50;
+            """, (id, ))
+            gene_disease_links = [[row[0], row[1], row[2], str(row[3])] for row in cur.fetchall()]
+
             stats = [
-                ("Total Publications", pubs_data[0], pubs_data[1], "Cumulative Count"),
-                ("Total Citations", pubs_data[0], pubs_data[2], "Cumulative Count"),
-                ("Total Journal", journals_data[0], journals_data[1], "Cumulative Count"),
+                ("Publications", pubs_data[0], pubs_data[1], "Cumulative Count"),
+                ("Citations", pubs_data[0], pubs_data[2], "Cumulative Count"),
+                ("Journals", journals_data[0], journals_data[1], "Cumulative Count"),
                 ("SJR", sjr_data[0], sjr_data[2], "Average"),
-                ("h index", sjr_data[0], sjr_data[1], "Average")
+                ("h index", sjr_data[0], sjr_data[1], "Average"),
+                ("Articles", gene_disease_links),
             ]
 
             return jsonify({"gene_data": gene_data.tolist(), "disease_data": disease_data.tolist(), "gene_name": relationship[2], "disease_name": relationship[3], "stats": stats, "gene_links": gene_links, "disease_links": disease_links})

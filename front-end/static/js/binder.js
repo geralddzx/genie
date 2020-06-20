@@ -84,21 +84,29 @@ $("#stats").on("click", ".tab-select", (event) => {
   $(event.target).addClass("selected")
   let index = parseInt($(event.target).attr("index"))
 
-  let layout = {
-    plot_bgcolor: "#222222",
-    paper_bgcolor:"#222222",
-    font: {color: 'white'},
-    title: {text: genie.relationship.stats[index][0]},
-    xaxis: {
-      title: {text: 'Year'}
-    },
-    yaxis: {
-      title: {text: genie.relationship.stats[index][3]}
+  if (index == genie.relationship.stats.length - 1) {
+    $("#stats-plot").empty()
+    $("#stats-plot").append($("<h4 style='color:white;display:flex;height:15%;margin:0;align-items:center;justify-content:center'>Related Articles</h4>"))
+    let ul = $("<ul class='gene-disease-articles'>")
+    $("#stats-plot").append(ul)
+    genie.updateLinks($("#stats-plot .gene-disease-articles"), genie.relationship.stats[index][1])
+  } else {
+    let layout = {
+      plot_bgcolor: "#222222",
+      paper_bgcolor:"#222222",
+      font: {color: 'white'},
+      title: {text: genie.relationship.stats[index][0]},
+      xaxis: {
+        title: {text: 'Year'}
+      },
+      yaxis: {
+        title: {text: genie.relationship.stats[index][3]}
+      }
     }
-  }
 
-  let trace = [{type: "scatter", mode: "lines", x: genie.relationship.stats[index][1], y: genie.relationship.stats[index][2]}]
-  Plotly.newPlot("stats-plot", trace, layout, {displayModeBar: false})
+    let trace = [{type: "scatter", mode: "lines", x: genie.relationship.stats[index][1], y: genie.relationship.stats[index][2]}]
+    Plotly.newPlot("stats-plot", trace, layout, {displayModeBar: false})
+  }
 })
 
 $("#export").click((event) => {
