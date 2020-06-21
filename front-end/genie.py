@@ -15,9 +15,9 @@ import time
 
 genie = Blueprint("genie", __name__)
 orders = [None, "DESC", "ASC"]
-column_names = ["Id", "Mesh Id", "Disease", "Gene", "P2 Prob", "Change Recent", "Probability Change", "Previous Probability", "Publications", "Citations"]
-columns = ["id", "mesh_id", "disease_name", "gene_name", "p2_prob", "change_recent", "recent_prob_change", "previous_prob", "num_pubs", "num_citations"]
-column_types = ["text", "text", "text", "text", "numeric", "boolean", "numeric", "numeric", "numeric", "numeric"]
+column_names = ["Id", "Mesh Id", "Disease", "Gene", "P2 Prob", "Publications", "Citations"]
+columns = ["id", "mesh_id", "disease_name", "gene_name", "p2_prob", "num_pubs", "num_citations"]
+column_types = ["text", "text", "text", "text", "numeric", "numeric", "numeric"]
 
 @genie.route("/")
 def view():
@@ -65,8 +65,8 @@ def index():
             for relationship in relationships:
                 row = list(relationship)
                 row[4] = str(row[4]) + "%"
-                row[6] = str(row[6]) + "%"
-                row[7] = str(row[7]) + "%"
+                # row[6] = str(row[6]) + "%"
+                # row[7] = str(row[7]) + "%"
                 row[8] = "{:,}".format(row[8])
                 row[9] = "{:,}".format(row[9])
                 results.append(row)
