@@ -81,11 +81,11 @@ for (let i = 1; i <= 2; i++) {
 
 $("#stats").on("click", ".tab-select", (event) => {
   $("#stats .tab-select").removeClass("selected")
+  $("#stats-plot").empty()
   $(event.target).addClass("selected")
   let index = parseInt($(event.target).attr("index"))
 
   if (index == genie.relationship.stats.length - 1) {
-    $("#stats-plot").empty()
     $("#stats-plot").append($("<h4 style='color:white;display:flex;height:15%;margin:0;align-items:center;justify-content:center'>Related Articles</h4>"))
     let ul = $("<ul class='gene-disease-articles'>")
     $("#stats-plot").append(ul)
