@@ -28,8 +28,10 @@ genie.fetch = (format) => {
 }
 
 genie.show = (id) => {
+  $('#loading-indicator').show()
   $.get("/relationships/" + id, (data) => {
     genie.select(data)
+    $('#loading-indicator').hide()
   })
 }
 
