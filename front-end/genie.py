@@ -127,7 +127,7 @@ def show(id):
                 FROM paper_links
                 WHERE gene_id = %s
                 ORDER BY paper_links.citations DESC
-                LIMIT 50;
+                LIMIT 25;
             """, (relationship[0], ))
             gene_links = [[row[0], row[1], row[2]] for row in cur.fetchall()]
 
@@ -138,7 +138,7 @@ def show(id):
                 FROM paper_links
                 WHERE mesh_id = %s
                 ORDER BY paper_links.citations DESC
-                LIMIT 50;
+                LIMIT 25;
             """, (relationship[1], ))
             disease_links = [[row[0], row[1], row[2]] for row in cur.fetchall()]
 
@@ -149,7 +149,7 @@ def show(id):
                 FROM paper_links
                 WHERE gene_disease_id = %s
                 ORDER BY paper_links.citations DESC
-                LIMIT 50;
+                LIMIT 25;
             """, (id, ))
             gene_disease_links = [[row[0], row[1], row[2]] for row in cur.fetchall()]
 
@@ -165,7 +165,7 @@ def show(id):
             ]
 
             print("return data at ", time.time() - start_time)
-            
+
             return jsonify({"gene_data": gene_data.tolist(), "disease_data": disease_data.tolist(), "gene_name": relationship[2], "disease_name": relationship[3], "stats": stats, "gene_links": gene_links, "disease_links": disease_links})
 
 
